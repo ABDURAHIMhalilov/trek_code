@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const pool = require("../db")
-const Auth=require("../middleware/auth.js")
-router.post('/orders',auth.authenticateToken, async (req, res) => {  
+const auth=require("../middleware/auth.js")
+router.post('/orders', auth.authenticateToken, async (req, res) => {  
    const {trek_id,sender}=req.body;
    const query='INSERT INTO orders (trek_id, sender) VALUES ($1, $2) RETURNING *';  
     const values = [trek_id, sender];
@@ -49,7 +49,7 @@ if(result1.rows[i].id==result2.rows[j].orders_id && result2.rows[j].insender[0])
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
-router.get('/myorders',Auth.authenticateToken,async (req,res)=>{
+router.get('/myorders',auth.authenticateToken,async (req,res)=>{
   try {
     const orders = 'SELECT * FROM orders';
     const orders_address = 'SELECT * FROM orders_address';
@@ -87,7 +87,7 @@ var a=result1.rows.filter(item=>{item.sender===req.user.userId})
 
 
 })
-router.get('/myorders2',Auth.authenticateToken,async (req,res)=>{
+router.get('/myorders2',auth.authenticateToken,async (req,res)=>{
   try {
     const orders = 'SELECT * FROM orders';
     const orders_address = 'SELECT * FROM orders_address WHERE sender=$1 ';
